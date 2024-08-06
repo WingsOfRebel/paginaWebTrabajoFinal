@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Medidas</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body class="mantenimiento-fondo">
+    <div class="container">
+        <div class="wrapper">
+            <h2>Agregar Medida</h2>
+            <form id="addForm" class="crud-form">
+                <div class="input-box">
+                    <input type="text" placeholder="Nombre de la Medida" id="add_nommedida" name="nommedida" maxlength="15" required>
+                    <i class='bx bx-ruler'></i>
+                </div>
+                <div class="input-box">
+                    <input type="text" placeholder="Descripción de la Medida" id="add_descripmedida" name="descripmedida" maxlength="35" required>
+                    <i class='bx bx-notepad'></i>
+                </div>
+                <button type="submit" class="btn">Agregar</button>
+            </form>
+        </div>
+
+        <div class="wrapper">
+            <h2>Actualizar Medida</h2>
+            <form id="updateForm" class="crud-form">
+                <div class="input-box">
+                    <input type="number" placeholder="ID de la Medida" id="update_id" name="idmedida" required>
+                    <i class='bx bx-id-card'></i>
+                </div>
+                <div class="input-box">
+                    <input type="text" placeholder="Nuevo Nombre de la Medida" id="update_nommedida" name="nommedida" maxlength="15" required>
+                    <i class='bx bx-ruler'></i>
+                </div>
+                <div class="input-box">
+                    <input type="text" placeholder="Nueva Descripción de la Medida" id="update_descripmedida" name="descripmedida" maxlength="35" required>
+                    <i class='bx bx-notepad'></i>
+                </div>
+                <button type="submit" class="btn">Actualizar</button>
+            </form>
+        </div>
+
+        <div class="wrapper">
+            <h2>Eliminar Medida</h2>
+            <form id="deleteForm" class="crud-form">
+                <div class="input-box">
+                    <input type="number" placeholder="ID de la Medida" id="delete_id" name="idmedida" required>
+                    <i class='bx bx-trash'></i>
+                </div>
+                <button type="submit" class="btn">Eliminar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <h1>Listado de Medidas</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Medida</th>
+                    <th>Nombre de la Medida</th>
+                    <th>Descripción de la Medida</th>
+                </tr>
+            </thead>
+            <tbody id="medidas-table-body">
+                <!-- Los datos se cargarán aquí mediante JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Función para manejar el listado de medidas
+            function loadMeasures() {
+                $.ajax({
+                    url: 'http://localhost/paginaWebFinal/php/procesar_medidas.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var tableBody = $('#medidas-table-body');
+                        tableBody.empty();
+                        $.each(data, function(index, medida) {
+                            var row = '<tr>' +
+                                '<td>' + medida.idmedida + '</td>' +
+                                '<td>' + medida.nommedida + '</td>' +
+                                '<td>' + medida.descripmedida + '</td>' +
+                                '</tr>';
+                            tableBody.append(row);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error: ' + error);
+                    }
+                });
+            }
+
+            loadMeasures(); // Cargar las medidas al inicio
+
+            // Función para manejar el formulario de agregar
+            $("#addForm").on("submit", function(event){
+                event.preventDefault();
+                $.ajax({
+                    url: 'http://localhost/paginaWebFinal/php/procesar_medidas.php',
+                    method: 'POST',
+                    data: $(this).serialize() + '&action=add',
+                    success: function(response){
+                        loadMeasures(); // Recargar la tabla después de agregar
+                        $("#addForm")[0].reset();
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Medida agregada correctamente',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#message").html("Error: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            });
+
+            // Función para manejar el formulario de actualizar
+            $("#updateForm").on("submit", function(event){
+                event.preventDefault();
+                $.ajax({
+                    url: 'http://localhost/paginaWebFinal/php/procesar_medidas.php',
+                    method: 'POST',
+                    data: $(this).serialize() + '&action=update',
+                    success: function(response){
+                        loadMeasures(); // Recargar la tabla después de actualizar
+                        $("#updateForm")[0].reset();
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Medida actualizada correctamente',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#message").html("Error: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            });
+
+            // Función para manejar el formulario de eliminar
+            $("#deleteForm").on("submit", function(event){
+                event.preventDefault();
+                $.ajax({
+                    url: 'http://localhost/paginaWebFinal/php/procesar_medidas.php',
+                    method: 'POST',
+                    data: $(this).serialize() + '&action=delete',
+                    success: function(response){
+                        loadMeasures(); // Recargar la tabla después de eliminar
+                        $("#deleteForm")[0].reset();
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Medida eliminada correctamente',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#message").html("Error: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

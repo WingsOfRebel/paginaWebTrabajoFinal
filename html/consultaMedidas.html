@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Departamentos</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+      <h1>Listado de Departamentos</h1>
+      <table>
+          <thead>
+              <tr>
+                  <th>ID Departamento</th>
+                  <th>Nombre del Departamento</th>
+                  <th>ID Provincia</th>
+              </tr>
+          </thead>
+          <tbody id="departamentos-table-body">
+              <!-- Los datos se cargarán aquí mediante JavaScript -->
+          </tbody>
+      </table>
+  </div>
+  <script>
+      $(document).ready(function() {
+          $.ajax({
+              url: 'http://localhost/paginaWebFinal/php/consulta-departamentos.php',
+              type: 'GET',
+              dataType: 'json',
+              success: function(data) {
+                  var tableBody = $('#departamentos-table-body');
+                  $.each(data, function(index, departamento) {
+                      var row = '<tr>' +
+                          '<td>' + departamento.iddepartamento + '</td>' +
+                          '<td>' + departamento.departamento + '</td>' +
+                          '<td>' + departamento.id_provincia + '</td>' +
+                          '</tr>';
+                      tableBody.append(row);
+                  });
+              },
+              error: function(xhr, status, error) {
+                  console.error('Error: ' + error);
+              }
+          });
+      });
+  </script>
+</body>
+</html>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Departamentos</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body class="mantenimiento-fondo">
+    <div class="container">
+        <div class="wrapper">
+            <h2>Agregar Departamento</h2>
+            <form id="addForm" class="crud-form">
+                <div class="input-box">
+                    <input type="text" placeholder="Nombre del Departamento" id="add_departamento" name="departamento" required>
+                    <i class='bx bx-building-house'></i>
+                </div>
+                <div class="input-box">
+                    <input type="number" placeholder="ID Provincia" id="add_id_provincia" name="id_provincia" required>
+                    <i class='bx bx-notepad'></i>
+                </div>
+                <button type="submit" class="btn">Agregar</button>
+            </form>
+        </div>
+
+        <div class="wrapper">
+            <h2>Actualizar Departamento</h2>
+            <form id="updateForm" class="crud-form">
+                <div class="input-box">
+                    <input type="number" placeholder="ID del Departamento" id="update_id" name="iddepartamento" required>
+                    <i class='bx bx-id-card'></i>
+                </div>
+                <div class="input-box">
+                    <input type="text" placeholder="Nuevo Nombre del Departamento" id="update_departamento" name="departamento" required>
+                    <i class='bx bx-building-house'></i>
+                </div>
+                <div class="input-box">
+                    <input type="number" placeholder="Nuevo ID Provincia" id="update_id_provincia" name="id_provincia" required>
+                    <i class='bx bx-notepad'></i>
+                </div>
+                <button type="submit" class="btn">Actualizar</button>
+            </form>
+        </div>
+
+        <div class="wrapper">
+            <h2>Eliminar Departamento</h2>
+            <form id="deleteForm" class="crud-form">
+                <div class="input-box">
+                    <input type="number" placeholder="ID del Departamento" id="delete_id" name="iddepartamento" required>
+                    <i class='bx bx-trash'></i>
+                </div>
+                <button type="submit" class="btn">Eliminar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="wrapper-table">
+        <h1>Listado de Departamentos</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Departamento</th>
+                    <th>Nombre del Departamento</th>
+                    <th>ID Provincia</th>
+                </tr>
+            </thead>
+            <tbody id="departamentos-table-body">
+                <!-- Los datos se cargarán aquí mediante JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Función para manejar el listado de departamentos
+            function loadDepartments() {
+                $.ajax({
+                    url: 'http://localhost/paginaWebFinal/php/procesar_departamentos.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var tableBody = $('#departamentos-table-body');
+                        tableBody.empty();
+                        $.each(data, function(index, departamento) {
+                            var row = '<tr>' +
+                                '<td>' + departamento.iddepartamento + '</td>' +
+                                '<td>' + departamento.departamento + '</td>' +
+                                '<td>' + departamento.id_provincia + '</td>' +
+                                '</tr>';
+                            tableBody.append(row);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error: ' + error);
+                    }
+                });
+            }
+
+            loadDepartments(); // Cargar los departamentos al inicio
+
+            // Función para manejar el formulario de agregar
+            $("#addForm").on("submit", function(event){
+                event.preventDefault();
+                $.ajax({
+                    url: 'http://localhost/paginaWebFinal/php/procesar_departamentos.php',
+                    method: 'POST',
+                    data: $(this).serialize() + '&action=add',
+                    success: function(response){
+                        loadDepartments(); // Recargar la tabla después de agregar
+                        $("#addForm")[0].reset();
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Departamento agregado correctamente',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#message").html("Error: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            });
+
+            // Función para manejar el formulario de actualizar
+            $("#updateForm").on("submit", function(event){
+                event.preventDefault();
+                $.ajax({
+                    url: 'http://localhost/paginaWebFinal/php/procesar_departamentos.php',
+                    method: 'POST',
+                    data: $(this).serialize() + '&action=update',
+                    success: function(response){
+                        loadDepartments(); // Recargar la tabla después de actualizar
+                        $("#updateForm")[0].reset();
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Departamento actualizado correctamente',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#message").html("Error: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            });
+
+            // Función para manejar el formulario de eliminar
+            $("#deleteForm").on("submit", function(event){
+                event.preventDefault();
+                $.ajax({
+                    url: 'http://localhost/paginaWebFinal/php/procesar_departamentos.php',
+                    method: 'POST',
+                    data: $(this).serialize() + '&action=delete',
+                    success: function(response){
+                        loadDepartments(); // Recargar la tabla después de eliminar
+                        $("#deleteForm")[0].reset();
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Departamento eliminado correctamente',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#message").html("Error: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

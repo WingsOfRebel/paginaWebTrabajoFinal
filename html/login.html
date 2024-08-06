@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="login-page">
+   
+        <div class="wrapper">
+            <h1>Iniciar Sesión</h1>
+            <form action="http://localhost/paginaWebFinal/php/login.php" method="post">
+                <div class="input-box">
+                    <input type="text" placeholder="Usuario" id="username" name="username" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" placeholder="Contraseña" id="password" name="password" required>
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <button type="submit" class="btn">Ingresar</button>
+            </form>
+   
+    </div>
+</body>
+</html>
