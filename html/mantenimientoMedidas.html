@@ -58,20 +58,8 @@
         </div>
     </div>
 
-    <div class="wrapper">
-        <h1>Listado de Medidas</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID Medida</th>
-                    <th>Nombre de la Medida</th>
-                    <th>Descripción de la Medida</th>
-                </tr>
-            </thead>
-            <tbody id="medidas-table-body">
-                <!-- Los datos se cargarán aquí mediante JavaScript -->
-            </tbody>
-        </table>
+    <div class="wrapper-table">
+        <button onclick="window.location.href='consultaMedidas.html'" class="btn-form">Ver Formulario</button>
     </div>
 
     <script>
@@ -99,9 +87,29 @@
                     }
                 });
             }
-
+    
             loadMeasures(); // Cargar las medidas al inicio
-
+    
+            function getParameterByName(name) {
+                var url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+    
+            var idmedida = getParameterByName('idmedida');
+            var nommedida = getParameterByName('nommedida');
+            var descripmedida = getParameterByName('descripmedida');
+    
+            if (idmedida && nommedida && descripmedida) {
+                $('#update_id').val(idmedida);
+                $('#update_nommedida').val(nommedida);
+                $('#update_descripmedida').val(descripmedida);
+            }
+    
             // Función para manejar el formulario de agregar
             $("#addForm").on("submit", function(event){
                 event.preventDefault();
@@ -124,7 +132,7 @@
                     }
                 });
             });
-
+    
             // Función para manejar el formulario de actualizar
             $("#updateForm").on("submit", function(event){
                 event.preventDefault();
@@ -147,7 +155,7 @@
                     }
                 });
             });
-
+    
             // Función para manejar el formulario de eliminar
             $("#deleteForm").on("submit", function(event){
                 event.preventDefault();
@@ -172,5 +180,6 @@
             });
         });
     </script>
+    
 </body>
 </html>

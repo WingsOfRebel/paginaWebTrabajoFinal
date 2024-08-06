@@ -10,7 +10,13 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
+
+
+
 <body class="mantenimiento-fondo">
+
+   
+
     <div class="container">
         <div class="wrapper">
             <h2>Agregar Departamento</h2>
@@ -59,48 +65,19 @@
     </div>
 
     <div class="wrapper-table">
-        <h1>Listado de Departamentos</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID Departamento</th>
-                    <th>Nombre del Departamento</th>
-                    <th>ID Provincia</th>
-                </tr>
-            </thead>
-            <tbody id="departamentos-table-body">
-                <!-- Los datos se cargarán aquí mediante JavaScript -->
-            </tbody>
-        </table>
+        <button onclick="window.location.href='consultaDepartamentos.html'" class="btn-form">Ver Formulario</button>
     </div>
 
     <script>
         $(document).ready(function() {
-            // Función para manejar el listado de departamentos
-            function loadDepartments() {
-                $.ajax({
-                    url: 'http://localhost/paginaWebFinal/php/procesar_departamentos.php',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        var tableBody = $('#departamentos-table-body');
-                        tableBody.empty();
-                        $.each(data, function(index, departamento) {
-                            var row = '<tr>' +
-                                '<td>' + departamento.iddepartamento + '</td>' +
-                                '<td>' + departamento.departamento + '</td>' +
-                                '<td>' + departamento.id_provincia + '</td>' +
-                                '</tr>';
-                            tableBody.append(row);
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error: ' + error);
-                    }
-                });
-            }
 
-            loadDepartments(); // Cargar los departamentos al inicio
+            var params = new URLSearchParams(window.location.search);
+            if (params.has('id') && params.has('departamento') && params.has('id_provincia')) {
+                $('#update_id').val(params.get('id'));
+                $('#update_departamento').val(params.get('departamento'));
+                $('#update_id_provincia').val(params.get('id_provincia'));
+                $('html, body').animate({ scrollTop: $('#updateForm').offset().top }, 'slow');
+            }
 
             // Función para manejar el formulario de agregar
             $("#addForm").on("submit", function(event){
@@ -110,7 +87,6 @@
                     method: 'POST',
                     data: $(this).serialize() + '&action=add',
                     success: function(response){
-                        loadDepartments(); // Recargar la tabla después de agregar
                         $("#addForm")[0].reset();
                         Swal.fire({
                             title: 'Éxito',
@@ -133,7 +109,6 @@
                     method: 'POST',
                     data: $(this).serialize() + '&action=update',
                     success: function(response){
-                        loadDepartments(); // Recargar la tabla después de actualizar
                         $("#updateForm")[0].reset();
                         Swal.fire({
                             title: 'Éxito',
@@ -156,7 +131,6 @@
                     method: 'POST',
                     data: $(this).serialize() + '&action=delete',
                     success: function(response){
-                        loadDepartments(); // Recargar la tabla después de eliminar
                         $("#deleteForm")[0].reset();
                         Swal.fire({
                             title: 'Éxito',

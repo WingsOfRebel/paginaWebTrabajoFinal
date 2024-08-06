@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultar Medidas</title>
+    <title>Consultar Salas</title>
     <link rel="stylesheet" href="/styles/styles.css">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -12,16 +12,16 @@
 </head>
 <body class="mantenimiento-fondo">
     <div class="wrapper-table-form">
-        <h1>Listado de Medidas</h1>
+        <h1>Listado de Salas</h1>
         <table>
             <thead>
                 <tr>
-                    <th>ID Medida</th>
-                    <th>Nombre de la Medida</th>
-                    <th>Descripción de la Medida</th>
+                    <th>ID Sala</th>
+                    <th>Nombre de la Sala</th>
+                    <th>Fecha</th>
                 </tr>
             </thead>
-            <tbody id="medidas-table-body">
+            <tbody id="salas-table-body">
                 <!-- Los datos se cargarán aquí mediante JavaScript -->
             </tbody>
         </table>
@@ -29,29 +29,29 @@
 
     <script>
         $(document).ready(function() {
-            function loadMeasures() {
+            function loadRooms() {
                 $.ajax({
-                    url: 'http://localhost/paginaWebFinal/php/procesar_medidas.php',
+                    url: 'http://localhost/paginaWebFinal/php/procesar_sala.php',
                     type: 'GET',
                     dataType: 'json',
                     success: function(data) {
-                        var tableBody = $('#medidas-table-body');
+                        var tableBody = $('#salas-table-body');
                         tableBody.empty();
-                        $.each(data, function(index, medida) {
-                            var row = '<tr data-idmedida="' + medida.idmedida + '" data-nommedida="' + medida.nommedida + '" data-descripmedida="' + medida.descripmedida + '">' +
-                                '<td>' + medida.idmedida + '</td>' +
-                                '<td>' + medida.nommedida + '</td>' +
-                                '<td>' + medida.descripmedida + '</td>' +
+                        $.each(data, function(index, sala) {
+                            var row = '<tr data-id="' + sala.id + '" data-nomsalas="' + sala.nomsalas + '" data-fecha="' + sala.fecha + '">' +
+                                '<td>' + sala.id + '</td>' +
+                                '<td>' + sala.nomsalas + '</td>' +
+                                '<td>' + sala.fecha + '</td>' +
                                 '</tr>';
                             tableBody.append(row);
                         });
 
                         // Agregar evento de doble clic a cada fila
-                        $('#medidas-table-body tr').on('dblclick', function() {
-                            var idmedida = $(this).data('idmedida');
-                            var nommedida = $(this).data('nommedida');
-                            var descripmedida = $(this).data('descripmedida');
-                            window.location.href = 'mantenimientoMedidas.html?idmedida=' + idmedida + '&nommedida=' + nommedida + '&descripmedida=' + descripmedida;
+                        $('#salas-table-body tr').on('dblclick', function() {
+                            var id = $(this).data('id');
+                            var nomsalas = $(this).data('nomsalas');
+                            var fecha = $(this).data('fecha');
+                            window.location.href = 'mantenimientoSalas.html?id=' + id + '&nomsalas=' + nomsalas + '&fecha=' + fecha;
                         });
                     },
                     error: function(xhr, status, error) {
@@ -60,7 +60,7 @@
                 });
             }
 
-            loadMeasures(); // Cargar las medidas al inicio
+            loadRooms(); // Cargar las salas al inicio
         });
     </script>
 </body>

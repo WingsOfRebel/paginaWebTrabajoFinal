@@ -60,28 +60,15 @@
         </div>
     </div>
 
-    <div class="wrapper">
-        <h1>Listado de Salas</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID Sala</th>
-                    <th>Nombre de la Sala</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody id="salas-table-body">
-                <!-- Los datos se cargarán aquí mediante JavaScript -->
-            </tbody>
-        </table>
-    </div>
 
+    <div class="wrapper-table">
+        <button onclick="window.location.href='consultaSalas.html'" class="btn-form">Ver Formulario</button>
+    </div>
     <script>
         $(document).ready(function() {
-            // Función para manejar el listado de salas
             function loadRooms() {
                 $.ajax({
-                    url: 'http://localhost/paginaWebFinal/php/procesar_salas.php',
+                    url: 'http://localhost/paginaWebFinal/php/procesar_sala.php',
                     type: 'GET',
                     dataType: 'json',
                     success: function(data) {
@@ -101,14 +88,35 @@
                     }
                 });
             }
-
+    
             loadRooms(); // Cargar las salas al inicio
-
+    
+            // Obtener parámetros de la URL
+            function getParameterByName(name) {
+                var url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+    
+            var updateId = getParameterByName('id');
+            var updateNomsalas = getParameterByName('nomsalas');
+            var updateFecha = getParameterByName('fecha');
+    
+            if (updateId && updateNomsalas && updateFecha) {
+                $("#update_id").val(updateId);
+                $("#update_nomsalas").val(updateNomsalas);
+                $("#update_fecha").val(updateFecha);
+            }
+    
             // Función para manejar el formulario de agregar
             $("#salaForm").on("submit", function(event){
                 event.preventDefault();
                 $.ajax({
-                    url: 'http://localhost/paginaWebFinal/php/procesar_salas.php',
+                    url: 'http://localhost/paginaWebFinal/php/procesar_sala.php',
                     method: 'POST',
                     data: $(this).serialize() + '&action=add',
                     success: function(response){
@@ -126,12 +134,12 @@
                     }
                 });
             });
-
+    
             // Función para manejar el formulario de actualizar
             $("#updateForm").on("submit", function(event){
                 event.preventDefault();
                 $.ajax({
-                    url: 'http://localhost/paginaWebFinal/php/procesar_salas.php',
+                    url: 'http://localhost/paginaWebFinal/php/procesar_sala.php',
                     method: 'POST',
                     data: $(this).serialize() + '&action=update',
                     success: function(response){
@@ -149,12 +157,12 @@
                     }
                 });
             });
-
+    
             // Función para manejar el formulario de eliminar
             $("#deleteForm").on("submit", function(event){
                 event.preventDefault();
                 $.ajax({
-                    url: 'http://localhost/paginaWebFinal/php/procesar_salas.php',
+                    url: 'http://localhost/paginaWebFinal/php/procesar_sala.php',
                     method: 'POST',
                     data: $(this).serialize() + '&action=delete',
                     success: function(response){
@@ -174,5 +182,6 @@
             });
         });
     </script>
+    
 </body>
 </html>
